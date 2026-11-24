@@ -36,7 +36,6 @@ always #5 clk = ~clk;
 assign ip_run = run & ~rst;
 
 top #(
-    .IS_DOUBLE (1),
     .ROUND_MODE(NRST),
     .OPERATION (MUL)
 ) dut (

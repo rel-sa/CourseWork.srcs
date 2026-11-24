@@ -1,9 +1,10 @@
 package st_pkg;
 
     localparam IS_DOUBLE = 1;
-    localparam DATA_W = IS_DOUBLE ? 64 : 32;
-    localparam MANT_W = IS_DOUBLE ? 53 : 24;
-    localparam EXP_W  = IS_DOUBLE ? 11 : 8 ;
+    localparam DATA_W = IS_DOUBLE ? 64   : 32  ;
+    localparam MANT_W = IS_DOUBLE ? 53   : 24  ;
+    localparam EXP_W  = IS_DOUBLE ? 11   : 8   ;
+    localparam BIAS   = IS_DOUBLE ? 1023 : 127 ;
     
     typedef struct packed {
         logic nan;

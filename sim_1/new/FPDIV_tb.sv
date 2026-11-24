@@ -2,7 +2,7 @@
 import st_pkg::*;
 
 module FPDIV_tb();
-parameter IS_DOUBLE = 1;
+localparam IS_DOUBLE = st_pkg::IS_DOUBLE;
 localparam DATA_W = IS_DOUBLE ? 64 : 32;
 localparam MANT_W = IS_DOUBLE ? 53 : 24;
 localparam EXP_W  = IS_DOUBLE ? 11 : 8;
@@ -31,7 +31,6 @@ initial clk = 0;
 always #5 clk = ~clk;
 
 top #(
-    .IS_DOUBLE (IS_DOUBLE),
     .ROUND_MODE(NRST),
     .OPERATION (DIV)
 ) dut (

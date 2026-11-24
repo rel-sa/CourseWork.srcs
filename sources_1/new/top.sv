@@ -1,15 +1,15 @@
 import st_pkg::*;
 
 module top #(
-    parameter IS_DOUBLE  = 1,
     parameter ROUND_MODE = NRST,
     parameter OPERATION  = SUB,
-
-    localparam DATA_W = IS_DOUBLE ? 64   : 32 ,
-    localparam MANT_W = IS_DOUBLE ? 53   : 24 ,
-    localparam EXP_W  = IS_DOUBLE ? 11   : 8  ,
-    localparam BIAS   = IS_DOUBLE ? 1023 : 127,
-    localparam LZC_W  = $clog2(MANT_W + 1)
+    
+    localparam IS_DOUBLE = st_pkg::IS_DOUBLE,
+    localparam DATA_W    = st_pkg::DATA_W,
+    localparam MANT_W    = st_pkg::MANT_W,
+    localparam EXP_W     = st_pkg::EXP_W,
+    localparam BIAS      = st_pkg::BIAS,
+    localparam LZC_W     = $clog2(MANT_W + 1)
 )(
     input                    clk,
     input                    rst,
