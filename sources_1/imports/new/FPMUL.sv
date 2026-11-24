@@ -171,7 +171,7 @@ reg                   run_reg_s3;
 // Переключение стадий
 always @(posedge clk)
 begin
-    run_reg_s0a  <= run; // run == run_s0
+    run_reg_s0a <= run; // run == run_s0
     run_reg_s0b <= run_reg_s0a;
     run_reg_s1  <= run_reg_s0b;
     run_reg_s1a <= run_reg_s1;

@@ -36,6 +36,10 @@ wire s1_signed_inf;
 
 wire zero_sign;
 
+wire [EXP_W  - 1:0] operand1_exp_raw;
+wire [EXP_W  - 1:0] operand2_exp_raw;
+wire [DATA_W - 1:0] operand1_raw;
+wire [DATA_W - 1:0] operand2_eff_raw;
 
 assign s2_eff_sign = operand2.sign ^ sub;
 assign res_sign    = operand1.sign ^ s2_eff_sign;
@@ -62,15 +66,16 @@ assign two_same_infs   =  operand1.flags.inf  &  operand2.flags.inf        &
 assign inf_and_number  =  operand1.flags.inf  & ~operand2.flags.inf        &
                          ~operand2.flags.nan                               ;
 
-assign number_and_inf  = ~operand1.flags.inf  &  ~operand2.flags.nanoperand2.flags.inf        ;
+assign number_and_inf  = ~operand1.flags.inf  & ~operand1.flags.nan        &
+                          operand2.flags.inf                               ;
 
 assign two_zeros       =  operand1.flags.zero &  operand2.flags.zero       ;
 
-assign zero_and_number =  operand1.flags.zero                              & 
+assign zero_and_number =  operand1.flags.zero & ~operand2.flags.nan        & 
                          ~operand2.flags.zero & ~operand2.flags.inf        ;
                          
 assign number_and_zero = ~operand1.flags.zero & ~operand1.flags.inf        &
-                          operand2.flags.zero                              ;
+                          operand2.flags.zero & ~operand1.flags.nan        ;
 
 
 assign qnan_case     = snan_operand  | qnan_operand   | two_diff_infs ;
@@ -93,13 +98,22 @@ assign early_result_mx = snan_operand  | qnan_operand    | two_diff_infs   |
 assign zero_sign = operand1.sign == operand2_eff.sign ? operand1.sign      :
                                                         round_mode == INFN ;
                            
-                           
+
+assign operand1_exp_raw = operand1.flags.subnormal ? {EXP_W{1'b0}} :
+                                                      operand1.exp ;
+
+assign operand2_exp_raw = operand2.flags.subnormal ? {EXP_W{1'b0}} :
+                                                      operand2.exp ;
+
+assign operand1_raw     = {operand1.sign    , operand1_exp_raw, operand1.mant[MANT_W - 2:0]};
+assign operand2_eff_raw = {operand2_eff.sign, operand2_exp_raw, operand2.mant[MANT_W - 2:0]};
+                        
 assign early_result = {DATA_W{qnan_case      }} & {res_sign         , {EXP_W{1'b1}}, 1'b1, {(MANT_W - 2){1'b0}}} |
-                      {DATA_W{s1_signed_inf  }} & {operand1.sign    , {EXP_W{1'b1}},       {(DATA_W - 1){1'b0}}} |
-                      {DATA_W{number_and_inf }} & {operand2_eff.sign, {EXP_W{1'b1}},       {(DATA_W - 1){1'b0}}} |
-                      {DATA_W{two_zeros      }} & {zero_sign        , {EXP_W{1'b0}},       {(DATA_W - 1){1'b0}}} |
-                      {DATA_W{zero_and_number}} &  operand2_eff                                                  |
-                      {DATA_W{number_and_zero}} &  operand1                                                      |
+                      {DATA_W{s1_signed_inf  }} & {operand1.sign    , {EXP_W{1'b1}},       {(MANT_W - 1){1'b0}}} |
+                      {DATA_W{number_and_inf }} & {operand2_eff.sign, {EXP_W{1'b1}},       {(MANT_W - 1){1'b0}}} |
+                      {DATA_W{two_zeros      }} & {zero_sign        , {EXP_W{1'b0}},       {(MANT_W - 1){1'b0}}} |
+                      {DATA_W{zero_and_number}} &  operand2_eff_raw                                              |
+                      {DATA_W{number_and_zero}} &  operand1_raw                                                  |
                                                   {DATA_W{1'b0}}                                                 ;
 
 endmodule

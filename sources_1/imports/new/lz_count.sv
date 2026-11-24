@@ -1,8 +1,8 @@
 module lz_count#(
     parameter IS_DOUBLE = 1,
+    parameter MANT_W    = IS_DOUBLE ? 53 : 24,
     
-    localparam MANT_W = IS_DOUBLE ? 53 : 24,
-    localparam LZC_W  = $clog2(MANT_W + 1)
+    localparam LZC_W = $clog2(MANT_W + 1)
 )(
     input  [MANT_W - 1:0] subnormal_mant,
     output [LZC_W - 1:0]  leading_zero_dn

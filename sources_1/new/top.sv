@@ -3,7 +3,7 @@ import st_pkg::*;
 module top #(
     parameter IS_DOUBLE  = 1,
     parameter ROUND_MODE = NRST,
-    parameter OPERATION  = DIV,
+    parameter OPERATION  = SUB,
 
     localparam DATA_W = IS_DOUBLE ? 64   : 32 ,
     localparam MANT_W = IS_DOUBLE ? 53   : 24 ,
@@ -117,6 +117,7 @@ case (OPERATION)
             .round_mode (ROUND_MODE),
             .sub        (1'b0),
             .run        (run_reg),
+            .rst        (rst),
             .val        (valid),
             .result     (result),
             .exceptions (exceptions) // это набросок, возможно интерфейс будет отличаться
@@ -136,6 +137,7 @@ case (OPERATION)
             .round_mode (ROUND_MODE),
             .sub        (1'b1),
             .run        (run_reg),
+            .rst        (rst),
             .val        (valid),
             .result     (result),
             .exceptions (exceptions) // это набросок, возможно интерфейс будет отличаться
